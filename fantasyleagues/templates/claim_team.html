@@ -1,0 +1,92 @@
+{% extends 'main.html' %}
+
+{% load static %} 
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body style="background-color: black;">
+	<div style="background-color: green; color: white; text-align: center; font-size: 60px; padding-bottom: 10px; width: 100%;">
+		{{league_name}} Teams
+	</div>
+	<br>
+	{% if messages %}
+	<div style="text-align: center; color: white;">
+	{% for message in messages %}    
+		<h5 class="{{ message.tags }}">{{message}}</h5>
+	{% endfor %}
+	</div> 
+	<br> 
+	{% endif %}
+	<div class="claim_team_container" style="width: 980px; margin:0 auto">
+		<table class="table table-striped table-dark" style="text-align: center;">
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">Team Name</th>
+		      <th scope="col">Manager Name</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{% for team in teams %}
+		    <tr>
+		      <th scope="row">{{forloop.counter}}</th>
+		      <td>{{team.team_name}}</td>
+	      	  {% if team.team_owner != None %}
+	      	    <td>{{team.team_owner}}</td>
+	      	  {% else %}
+	      	    <td><button onclick="Show_Hide_Teams(value)" value="{{team.team_name}}">Claim</button></td>
+	      	  {% endif %}
+		    </tr>
+		    {% endfor %}
+		  </tbody>
+		</table>
+	</div>
+	<div id="container_insert_league_key" style="text-align: center;">
+		<h3 onclick="Show_Hide_Teams()" style="cursor: pointer; font-weight: bold; padding-top: 10%;">Close</h3>
+		<br>
+		<div style="margin: 0 auto; border: 1px solid white; width: 490px; padding: 20px; ">
+			<ul style="text-align: left;">
+				<li>League: {{league_name}}</li>
+				<li><p>Selected Team: <span id="selected_team"></span></p></li>
+			</ul>
+			<br>
+			<form method="post">
+				{% csrf_token %}
+				<label for="league_key">League Key Required</label><br>
+				<input type="text" name="league_key" style="width: 80%;"><br><br>
+				<input type="hidden" name="team_name" id="team_name" value="">
+				<input type="submit" value="Submit">
+			</form>
+
+		</div>	
+	</div>
+	<script>
+		function Show_Hide_Teams(value) {
+			var x = document.getElementById('container_insert_league_key');
+			if (x.style.visibility === 'visible') {
+				x.style.visibility = 'hidden';
+			} else {
+				x.style.visibility = 'visible';
+				document.getElementById("selected_team").innerHTML = value;
+				document.getElementById("team_name").value = value;	
+			}
+		}
+	</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+{% endblock %} 
