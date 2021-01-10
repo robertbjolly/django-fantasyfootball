@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+
+{% load static %} 
+
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Draft Setup</title>
+	<link rel="stylesheet" href="{% static 'css/main.css' %}" >
+</head>
+<body class='draft_order_background'>
+	<div class="draft_order_determining_draft_spot">
+		<div id='draft_order_title_container'>
+			<h1 style="text-align: center;">
+				What Number Does <span>{{random_drafter}}</span> Want To Draft?
+			</h1>
+		</div>
+		<br>
+		<div id='draft_order_buttons_div'>
+			<form method="post">
+				{% csrf_token %}
+				<h4>Select Draft Spot</h4><br>
+				{% for num in available_draft_nums %}
+				<button name="send" value="{{random_drafter}}-{{num}}" type="submit">{{num}}</button><br>
+				{% endfor %}
+				<br>
+			</form>
+		</div>
+
+		<div id='draft_order_list_div'>
+			<h4>{{str_league}} Draft Order</h4><br>
+			<ol style="font-size: 20px;">
+				{% for drafter in draft_order_incomplete_list %}
+				<li>{{drafter}}</li>
+				{% endfor %}
+				<br>
+			</ol>
+		</div>
+
+	</div>
+
+</body>
+</html>
+
+{% endblock %} 

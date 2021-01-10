@@ -1,0 +1,98 @@
+{% extends 'main.html' %}
+
+{% load static %} 
+
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Draft Setup</title>
+	<link rel="stylesheet" href="{% static 'css/main.css' %}" >
+</head>
+<body id="draft_setup_background">
+	<br><br><br>
+	<div id="draft_setup_details_wrapper">
+		<div id="draft_setup_title_wrapper">
+			DRAFT TEAMS 
+		</div>
+		<div id='draft_setup_details_draft_teams' style="width: 100%;">
+		<form method="post">
+			{% csrf_token %}
+			<ul style="font-size: 16px; padding-left: 100px; width: 640px;">
+				<li>Please ensure all team names are different</li>
+				<li>Team names will need to be claimed by accounts after the draft (excluding commissioner)</li>			
+			</ul>
+			<div style="text-align: center;">
+				<h5>* First name provided will be the commissioners team name</h5>
+			</div>
+			{% if messages %}
+			<div style="text-align: center;">
+				{% for message in messages %}    
+		  			<p class="{{ message.tags }}">{{ message }}</p>
+				{% endfor %}
+			</div>  
+			{% endif %}
+			<div class='team_name_input_div' >
+				{{ formset.management_data }}
+				{{ formset.as_p }}
+			</div><br>
+			<div id='draft_teams_submit_button_container'>
+				<input type="submit" name="send" value="Continue">
+			</div>			
+		</form>
+		</div>
+	</div>
+</body>
+</html>
+
+{% endblock %} 
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+	<div id="draft_setup_details_wrapper">
+		<div id="draft_setup_title_wrapper">			
+			<div id='draft_setup_title'> 
+				DRAFT TEAMS
+			</div>
+			<div id='draft_setup_details_draft_teams' style="width: 100%;">
+				<form method="post"><br>
+					<p style="font-size: 18px">
+						* Please provide names of all players in your league. Make sure the names are different!
+						<br>
+					</p>
+					{% if messages %}
+						<div style="text-align: center;">
+							{% for message in messages %}    
+				      			<p class="{{ message.tags }}">{{ message }}</p>
+				    		{% endfor %}
+						</div>  
+					{% endif %}
+					<br>
+					{% csrf_token %}
+					<div class='team_name_input_div' >
+						{{ formset.management_data }}
+						{{ formset.as_p }}
+					</div><br>
+					<div id='draft_teams_submit_button_container'>
+						<input type="submit" name="send" value="Continue">
+					</div>			
+				</form>
+			</div>
+			</div>	
+		</div>
+	</div>
+
+-->

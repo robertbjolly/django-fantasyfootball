@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+{% load static %} 
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Draft Setup</title>
+	<link rel="stylesheet" href="{% static 'css/main.css' %}" >
+</head>
+
+<body id="draft_background">
+	<div id='draft_info'>
+		<div id='draft_title_wrapper'>
+			<div id='draft_title'> 
+				DRAFT
+			</div>
+		</div>
+		<div class="not_finished_previous_draft_div">
+			You have not finished your previous draft!<br><br>
+			Previous Draft:<br><br>
+			{% for i in league %}
+				League Name = {{i.league_name}}<br>
+				Number of Teams In League = {{i.league_amount}}<br><br>
+			{% endfor %}
+		</div>
+
+		<img src="{% static 'images/yellowflag.jpg' %}" id="yellow_flag_img"><br>
+
+
+		<form method="post" class="previous_draft_options">
+			{% csrf_token %}
+			What do you want to do?<br><br>
+			<input type="submit" name="send" value="Continue Previous Draft"><br><br>
+			<input type="submit" name="send" value="Delete Previous Draft"><br><br>
+		</form>
+	</div>
+</body>
+</html>
+
+
+{% endblock %} 
+
+
+
+
+
+

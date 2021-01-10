@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+
+{% load static %} 
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Draft Setup</title>
+	<link rel="stylesheet" href="{% static 'css/main.css' %}" >
+</head>
+<body id="draft_setup_background">
+	<br><br><br>
+	<div id="draft_setup_details_wrapper">
+		<div id="draft_setup_title_wrapper">
+			LEAGUE SETUP 
+		</div>
+		<div id='draft_setup_details'>
+			<br>
+			<h5 style="font-weight: bold;">
+				Welcome To Offline League Creation 
+			</h5>
+			<ul>
+				<li>Offline fantasy fooball drafts into one easy to use software.</li>
+				<li>Draft board can be displayed on a TV or projector letting everyone view previous selections</li>
+				<li>The League Key is the password for the created league. This will be necessary for everyone to join.</li>
+			</ul>
+			{% if messages %}
+			<br>
+			<div style="text-align: center;">
+			{% for message in messages %}    
+				<h6 class="{{ message.tags }}">{{message}}</h6>
+			{% endfor %}
+			</div> 
+			<br> 
+			{% endif %}
+			<form method="post">
+				{% csrf_token %}
+				<h5 style="font-weight: bold; text-transform: capitalize;">
+					{{form.as_p}}
+				</h5>
+				<h5 style="font-weight: bold; text-transform: capitalize;">
+					Number of teams in league:
+				</h5>
+				<div class="number_of_team_buttons">
+					<input type="submit" name="send" value="4">
+					<input type="submit" name="send" value="6">
+					<input type="submit" name="send" value="8">
+					<input type="submit" name="send" value="10">
+					<input type="submit" name="send" value="12">
+				</div>
+				<br><br>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
+
+
+
+{% endblock %} 
