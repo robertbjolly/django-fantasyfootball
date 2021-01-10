@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+{% load static %} 
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Homepage</title>
+	<link rel="stylesheet" href="{% static 'css/main.css' %}" >
+</head>
+
+<body id="homepage_background">
+	<div class="homepage_main_image_container" style="background-image: url({% static 'images/offensive_line.jpg' %})">
+		<div class="homepage_wrapper">
+			<div id="homepage_image_main_title_1">FANTASY FOOTBALL</div>
+			<div id="homepage_image_main_title_2">IS HERE</div>
+			<div id="homepage_image_sub_title">And We've Got You Covered</div>		
+	 		<input id="show_leagues_button" type="button" onclick="Show_Hide_Teams()" name="header_fantasy_button" value="Your Fantasy Leagues">		
+	 	</div>
+ 		<script>
+			function Show_Hide_Teams() {
+		  		var x = document.getElementById('show_user_leagues');
+		  		if (x.style.visibility === 'visible') {
+		  			x.style.visibility = 'hidden';
+		  		} else {
+		  			x.style.visibility = 'visible';
+		  		}
+		  	}
+		</script>
+		<div id="show_user_leagues">
+			<br>
+			<p onclick="Show_Hide_Teams()">Close</p>	
+			<br>
+			{% if user.is_authenticated %}
+			<span style="color: #6c6d6f;">Welcome {{user|title}}!</span>
+			{% endif %}
+			<br>
+			{% if teamnames_leagues_id|length == 0 %}
+			<h4>No Fantasy Teams Found</h4>
+			{% else %}
+			<h2>Your Fantasy Teams</h2>
+			{% endif %}
+
+			<div class="container_teamnames_leagues">
+				<hr style="border-top: 1px solid grey;">
+				{% if teamnames_leagues_id|length == 0 %}
+					<br>
+					<div class="container_if_user_no_teams">
+						<br>
+						<p>Would you like to Create a League?</p>
+						<a href="{% url 'draft_setup' %}"><button>Create League</button></a>
+						<br><br>
+						-or-
+						<br><br>
+						<p>Would you like to Join a Created League?</p>
+						<a href="{% url 'join_created_leagues' %}"><button>Join Created League</button></a>
+					</div>
+				{% else %}
+					<div class="container_if_user_has_teams">
+						{% for team_league in teamnames_leagues_id %}
+						<a href="{% url 'team_roster' slug=team_league.2 %}">{{team_league.0|title}}</a>
+						<br>
+						<span style="color: #6c6d6f; font-size: 13px;">{{team_league.1}}</span>
+						<hr style="border-top: 1px solid grey;">
+						{% endfor %}	
+					</div>
+				{% endif %}
+			</div>				
+		</div> 	
+ 	</div>
+</body>
+</html>
+
+
+{% endblock %} 
