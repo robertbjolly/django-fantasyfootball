@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+{% load static %} 
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Draft Results</title>
+</head>
+<body style="background-color: black;">
+	<div class="draft_results_title_container">
+		<h1 style="padding-top: 5px;">
+			{{league_name|title}} Draft Results
+		</h1>
+	</div>
+	
+	<div id='draft_table_container'>
+		<table class="table table-bordered table-dark">
+		  <thead>
+		    <tr>
+		      <th scope="col">Round</th>
+		      {% for drafter in league_draft_order %}
+		      <th scope="col">{{drafter|truncatechars:14}}</th>
+		      {% endfor %}
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	{% for pick in order_snake %}	  	
+		    <tr>
+		      <td>{{forloop.counter}}</td>
+		      {% for player in pick %}
+		      {% if 'QB' in player %}
+		      <td class="qb_drafted_player">{{player}}</td>
+		      {% elif 'RB' in player %}
+		      <td class="rb_drafted_player">{{player}}</td>
+		      {% elif 'WR' in player %}
+		      <td class="wr_drafted_player">{{player}}</td>
+		      {% elif 'TE' in player %}
+		      <td class="te_drafted_player">{{player}}</td>
+		      {% elif 'DEF' in player %}
+		      <td class="def_drafted_player">{{player}}</td>
+		      {% elif player.0 == 'K' %}
+		      <td class="k_drafted_player">{{player}}</td>
+		      {% else %}
+		      <td class="drafted_player">{{player}}</td>
+		      {% endif %}
+		      {% endfor %}
+		    </tr>	
+		  	{% endfor %}
+		  </tbody>
+		</table>
+	</div>
+</body>
+</html>
+
+{% endblock %}

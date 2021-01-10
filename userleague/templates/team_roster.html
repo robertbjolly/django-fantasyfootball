@@ -1,0 +1,307 @@
+{% extends 'main.html' %}
+{% load static %} 
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Team Roster</title>
+</head>
+<body style="background-color: black;">
+	{% if team != 'NotFound' %}
+	<div id="table_containers" style="background-color: white; width: 980px; margin: 0 auto; position: relative;">
+		<div class="team_roster_team_manager_league">
+			<div style="font-weight: bold; padding-top: 10px;">{{team|title}}</div>
+			<div style="font-size: 13px; ">{{team_manager|title}}</div> 
+			<div style="font-size: 13px; padding-bottom: 10px;">{{league_name|title}}</div>
+		</div>
+		<div class="league_nav_bar">
+		</div>
+		<!-- Starters Table -->
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th></th>
+					<th style="padding: 5px;">STARTERS</th>
+					{% if team_manager == user %}
+					<th style="padding: 5px;">ACTION</th>
+					{% endif %}
+					
+					<th style="padding: 5px;">Projection</th>
+					<th style="padding: 5px;">Score</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for player_info in order_starters %}
+				<tr>
+					<!-- Starter Table Positions -->
+					<th class="position" style="height: 10px; font-size: 14px; width: 100px;">
+						{{player_info.table_position}}
+					</th>
+					<!-- Starter Table Player Name, Injury Status, Team, Position -->
+					<td style="padding: 0px; width: 325px;">
+						<!-- Name, Injury Status -->
+						<span style="font-size: 13px;">{{player_info.player.football_player}} 
+							{% if player_info.injury_status == 'Healthy' %}<span style="font-size: 10px; color: red; font-weight: bold;"></span>{% endif %}
+							{% if player_info.injury_status == 'questionable' %}<span style="font-size: 10px; color: red; font-weight: bold;">Q</span>{% endif %}
+							{% if player_info.injury_status == 'doubtful' %}<span style="font-size: 10px; color: red; font-weight: bold;">D</span>{% endif %}
+							{% if player_info.injury_status == 'probable' %}<span style="font-size: 10px; color: red; font-weight: bold;">P</span>{% endif %}
+							{% if player_info.injury_status == 'out' %}<span style="font-size: 10px; color: red; font-weight: bold;">O</span>{% endif %}
+							{% if player_info.injury_status == 'IR' %}<span style="font-size: 10px; color: red; font-weight: bold;">{{player_info.injury_status}}</span>{% endif %}
+						</span> 
+						<br>
+						<!-- Team, Position -->
+						<span style="font-size: 11px;">
+							{{player_info.player.player_team.abbreviation}}
+							{% if player_info.player.player_position != None %}
+								{% if player_info.player.player_position == 'DEF' %}
+									D/ST
+								{% else %} 
+									{{player_info.player.player_position}}    
+								{% endif %}
+							{% endif %}
+						</span>
+					</td>
+					<!-- Starter Player Action Button -->
+					{% if team_manager == user %}
+					<td style="width: 175px;">
+						<button id="starter_{{player_info.player.football_player}}_{{player_info.table_position}}_{{player_info.player.player_position}}" onclick="editRoster(this.id)">Move</button>
+					</td>
+					{% endif %}
+
+					<!-- Starter Player Projection -->
+					{% if player_info.opponent %}
+						<td><span style="font-size: 13px;">{{player_info.player_projection}}</span></td>
+					{% else %}
+						<td>--</td>
+					{% endif %}
+
+					<!-- Starter Player Score -->
+					{% if player_info.opponent %}
+						<td><span style="font-size: 13px;">{{player_info.player_score}}</span></td>
+					{% else %}
+						<td>0</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+				<tr>
+					<td></td>
+					
+					{% if team_manager == user %}
+					<td></td>
+					{% endif %}
+					<th>TOTALS</th>
+					<td>0</td>
+					<th>0</th>
+				</tr>
+			</tbody>
+		</table>
+
+
+		<!-- Bench Table -->
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th></th>
+					<th style="padding: 5px;">BENCH</th>
+					{% if team_manager == user %}
+					<th style="padding: 5px;">ACTION</th>
+					{% endif %}
+					<th style="padding: 5px;">Projection</th>
+					<th style="padding: 5px;">Score</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for player_info in order_bench %}
+				<tr>
+					<td scope="row" style="height: 10px; font-size: 14px; width: 100px;">Bench</td>
+					<!-- Bench Table Player Name, Injury Status, Team, Position -->
+					<td style="padding: 0px; width: 325px;">
+						<!-- Name, Injury Status -->
+						<span style="font-size: 13px;">{{player_info.player.football_player}}
+							{% if player_info.injury_status == 'Healthy' %}<span style="font-size: 10px; color: red; font-weight: bold;"></span>{% endif %}
+							{% if player_info.injury_status == 'questionable' %}<span style="font-size: 10px; color: red; font-weight: bold;">Q</span>{% endif %}
+							{% if player_info.injury_status == 'doubtful' %}<span style="font-size: 10px; color: red; font-weight: bold;">D</span>{% endif %}
+							{% if player_info.injury_status == 'probable' %}<span style="font-size: 10px; color: red; font-weight: bold;">P</span>{% endif %}
+							{% if player_info.injury_status == 'IR' %}<span style="font-size: 10px; color: red; font-weight: bold;">{{player_info.injury_status}}</span>{% endif %}
+						</span>
+						<br>
+						<!-- Team, Position -->
+						<span style="font-size: 11px;">
+							{{player_info.player.player_team.abbreviation}}
+							{% if player_info.player.player_position == 'DEF' %}
+								D/ST
+							{% else %}
+								{{player_info.player.player_position}}
+							{% endif %}
+						</span>
+					</td>
+					<!-- Bench Player Action Button -->
+					{% if team_manager == user %}
+					<td style="width: 175px;">
+						<button id="bench_{{player_info.player.football_player}}_{{player_info.player.player_position}}" onclick="editRoster(this.id)">Move</button>
+					</td>
+					{% endif %}
+					<!-- Bench Player Projection -->
+					{% if player_info.opponent %}
+						<td><span style="font-size: 13px;">{{player_info.player_projection}}</span></td>
+					{% else %}
+						<td>--</td>
+					{% endif %}
+
+					<!-- Bench Player Score -->
+					{% if player_info.opponent %}
+						<td><span style="font-size: 13px;">{{player_info.player_score}}</span></td>
+					{% else %}
+						<td>0</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+				<tr id="hidden_empty_bench_spot" style="display: none;">
+					<td style="height: 10px; width: 100px;">Bench</td>
+					<td style="width: 225px;">Empty</td>
+					<td><button id="Bench Empty" onclick="editRoster(this.id)">Here</button></td>
+				</tr>
+			</tbody>		
+		</table>
+	</div>
+	<form id="hidden_roster_submit_form" method="post" style="display: none;">
+		{% csrf_token %}
+		<input type="text" name="player_1" id="player_1">
+		<input type="text" name="player_2" id="player_2">
+	</form>
+
+	<!-- If team not found -->
+	{% else %}
+	<br>
+	<div style="background-color: white; width: 980px; margin: 0 auto; position: relative;">
+		<div style="background-color: green; color: white; text-align: center; font-size: 60px; padding-bottom: 10px; width: 100%;">
+			Not Found
+		</div>
+		<div style="height: 475px;">
+			<h1 style="text-align: center;">
+				<img src="{% static 'images/yellowflag.jpg' %}" width="300px;" height="475px;" style="float:right;"><br>
+				<span style="font-size: 40px;">The league which you're trying to access does not exist.</span>
+				<hr width="40%" style="position: absolute; margin-left: 145px;"><br><br><br>
+				<h3 style="text-align: center;">Go to Fantasy Football 
+					<a href="{% url 'home' %}" style="text-decoration: none">Homepage.</a>
+				</h3>
+			</h1>
+		</div>
+	</div>
+	{% endif %}
+
+	<script>
+		function editRoster(clicked_id) {
+			var selected_player = document.getElementById(clicked_id);
+			selected_player.style.backgroundColor = "red";
+			selected_player.style.color = "white";
+			selected_player.style.border = "1px solid transparent";
+			selected_player_id = selected_player.id;
+			split_selected_player_id = selected_player_id.split('_');
+			selected_player_position = split_selected_player_id[split_selected_player_id.length - 1]
+
+			if (selected_player_position == "") {
+				selected_player_position = split_selected_player_id[split_selected_player_id.length - 2]
+			}
+			
+			selected_player_starter_or_bench = split_selected_player_id[0]
+			selected_player_flex = split_selected_player_id[split_selected_player_id.length - 2]
+
+			if (selected_player_flex == 'FLEX') {
+				selected_player_flex = 'True';
+			} else {
+				selected_player_flex = 'False';
+			}
+			
+			var selected_players = new Array();
+			var button = document.getElementsByTagName("button");
+			
+			for (var i = 0; i < button.length; i++) {
+				if (button[i].style.backgroundColor == 'red') {
+					selected_players.push(button[i])
+				}
+			}
+
+			if (selected_players.length == 1) {
+				var my_array = new Array();
+				var buttonTags = document.getElementsByTagName("button");
+				
+				for (var i = 0; i < buttonTags.length; i++) {
+				  if (buttonTags[i].textContent == 'Move') {
+				    my_array.push(buttonTags[i]);
+				  }
+				}
+				for (var i = 0; i < my_array.length; i++) {
+					button_id_split = my_array[i].id.split('_');
+					button_id_position = button_id_split[button_id_split.length - 1];
+					if (button_id_position == "") {
+						button_id_position = button_id_split[button_id_split.length - 2];
+					}
+					if (button_id_position != selected_player_position) {
+						my_array[i].style.visibility = "hidden";
+					}
+					if (button_id_position == selected_player_position) {
+						my_array[i].innerText = 'Here';
+						selected_player.innerText = 'Move'	
+					}
+					if (selected_player_starter_or_bench == 'starter') {
+						if (button_id_split[0] == 'starter' && button_id_position == selected_player_position) {
+							my_array[i].style.visibility = 'hidden';
+						selected_player.style.visibility = 'visible';
+						}
+					}
+					if (selected_player_starter_or_bench == 'bench') {
+						if (button_id_split[0] == 'bench') {
+							my_array[i].style.visibility = 'hidden';
+						selected_player.style.visibility = 'visible';
+						}
+					}
+					if (selected_player_starter_or_bench == 'bench') {
+						if (button_id_split[0] == 'bench') {
+							my_array[i].style.visibility = 'hidden';
+						selected_player.style.visibility = 'visible';
+						}
+					}
+					if (selected_player_flex == 'True') {
+						if (button_id_position == 'RB' || button_id_position == 'WR' || button_id_position == 'TE') {
+							my_array[i].style.visibility = 'visible';
+							my_array[i].innerText = 'Here';
+						}
+					}
+				}
+				if (selected_player_starter_or_bench == 'starter') {
+					var hidden_empty_bench_spot = document.getElementById("hidden_empty_bench_spot");
+					hidden_empty_bench_spot.style.display = 'table-row'
+				}
+				if (selected_player_position == 'RB' || selected_player_position == 'WR' || selected_player_position == 'TE') {
+					footballplayer = split_selected_player_id[1]
+					if (footballplayer == "") {			
+					} else {
+						x = document.querySelector('[id*="_FLEX"]');
+						x.style.visibility = 'visible';
+						x.innerText = 'Here';	
+					}
+				}
+
+			} else {
+				selected_players_ids = new Array();
+				var player1 = selected_players[0].id
+				var player2 = selected_players[1].id
+				document.getElementById('player_1').value = player1;
+				document.getElementById('player_2').value = player2;
+				document.getElementById('hidden_roster_submit_form').submit();
+			}
+		}
+	</script>
+
+
+</body>
+</html>
+
+-->
+
+
+{% endblock %}
+
